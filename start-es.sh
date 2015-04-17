@@ -4,7 +4,7 @@
 if [ $? -eq 0 ] ; then
 	curl -s http://consul:8500/v1/catalog/service/elasticsearch?tag=es-transport  \
 		| /jq -r ".[] | \
-			select(.ServiceID=\"$SERVICE_9300_ID\")  | \
+			select(.ServiceID==\"$SERVICE_9300_ID\")  | \
 			\"export PUBLISH_HOST=\" + .Address,  \
 			\"export PUBLISH_PORT=\" + (.ServicePort | tostring ) " > /publish.env
 
