@@ -12,6 +12,9 @@ ENV ES_PKG_NAME elasticsearch-1.5.0
 ADD https://github.com/hashicorp/consul-template/releases/download/v0.8.0/consul-template_0.8.0_linux_amd64.tar.gz  /consul-template.tar.gz
 RUN cd / && tar xzvf /consul-template.tar.gz --strip-components=1 && rm /consul-template.tar.gz
 
+ADD http://stedolan.github.io/jq/download/linux64/jq /jq
+RUN chmod +x /jq
+
 # Install Elasticsearch.
 RUN \
   cd / && \
