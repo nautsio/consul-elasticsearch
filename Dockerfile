@@ -22,6 +22,8 @@ RUN \
   tar xvzf - && \
   mv /$ES_PKG_NAME /elasticsearch
 
+RUN /elasticsearch/bin/plugin -install mobz/elasticsearch-head
+
 # Define mountable directories.
 VOLUME ["/data"]
 
