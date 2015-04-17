@@ -10,14 +10,13 @@ FROM dockerfile/java:oracle-java8
 ENV ES_PKG_NAME elasticsearch-1.5.0
 
 ADD https://github.com/hashicorp/consul-template/releases/download/v0.8.0/consul-template_0.8.0_linux_amd64.tar.gz  /consul-template.tar.gz
-RUN tar xzvf /consul-template.tar.gz --strip-components=1 && rm /consul-template.tar.gz
+RUN cd / && tar xzvf /consul-template.tar.gz --strip-components=1 && rm /consul-template.tar.gz
 
 # Install Elasticsearch.
 RUN \
   cd / && \
-  wget https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz && \
-  tar xvzf $ES_PKG_NAME.tar.gz && \
-  rm -f $ES_PKG_NAME.tar.gz && \
+  curl -s https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz | \
+  tar xvzf - && \
   mv /$ES_PKG_NAME /elasticsearch
 
 # Define mountable directories.
@@ -25,12 +24,15 @@ VOLUME ["/data"]
 
 # Mount elasticsearch.yml config
 ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
+ADD /es-unicast.ctmpl /
+ADD /start-es.sh /
+RUN chmod +x /start-es.sh
 
 # Define working directory.
 WORKDIR /data
 
 # Define default command.
-CMD ["/elasticsearch/bin/elasticsearch"]
+CMD ["/start-es.sh"]
 
 # Expose ports.
 #   - 9200: HTTP

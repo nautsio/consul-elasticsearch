@@ -1,0 +1,1 @@
+{{range $index, $service := service "es-transport.elasticsearch"}}{{if ne $index 0}},{{end}}{{$service.Address}}:{{$service.Port}}{{end}}
