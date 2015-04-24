@@ -3,7 +3,7 @@
 function getExternalAddress() {
 	curl -s http://consul:8500/v1/catalog/service/elasticsearch?tag=es-transport  \
 		| /jq -r ".[] | \
-			select(.ServiceID==\"$SERVICE_9300_ID\")  | \
+			select(.ServiceID==\"$SERVICE_ID\")  | \
 			\"export PUBLISH_HOST=\" + .Address,  \
 		\"export PUBLISH_PORT=\" + (.ServicePort | tostring ) " > /publish.env
 }
@@ -14,11 +14,12 @@ function getExternalAddressWait() {
 		getExternalAddress
 		. /publish.env
 		if [ -z "$PUBLISH_PORT" ] ; then
-			echo "Failed to obtain publish host and port for service '$SERVICE_9300_ID'. Retrying in 1s.." >&2
+			echo "Failed to obtain publish host and port for service '$SERVICE_ID'. Retrying in 1s.." >&2
 			sleep 1
 		fi
 	done
 }
+sed -i -e 's/es-transport.[^"]*/es-transport.'"$SERVICE_NAME/" es-unicast.ctmpl
 /consul-template -consul consul:8500 -once -template /es-unicast.ctmpl:/es-unicast.lst 
 
 if [ $? -eq 0 ] ; then
