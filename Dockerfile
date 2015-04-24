@@ -23,8 +23,7 @@ RUN \
   mv /$ES_PKG_NAME /elasticsearch
 
 RUN cd / && \
-     /elasticsearch/bin/plugin -install mobz/elasticsearch-head \
-     && mv /elasticsearch/plugins /data/plugins
+     /elasticsearch/bin/plugin -install mobz/elasticsearch-head
 
 # Define mountable directories.
 VOLUME ["/data"]
