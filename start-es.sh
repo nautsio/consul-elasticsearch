@@ -10,12 +10,18 @@ function getExternalAddress() {
 
 function getExternalAddressWait() {
 
+	COUNT=1
 	while [ -z "$PUBLISH_PORT" ] ; do
 		getExternalAddress
 		. /publish.env
-		if [ -z "$PUBLISH_PORT" ] ; then
+		if [ $COUNT -le 60 -a -z "$PUBLISH_PORT" ] ; then
 			echo "Failed to obtain publish host and port for service '$SERVICE_ID'. Retrying in 1s.." >&2
 			sleep 1
+			COUNT=$(($COUNT + 1))
+		fi
+		if [ -z "$PUBLISH_PORT" ] ; then
+			echo "Failed to obtain publish host and port for service '$SERVICE_ID'. " >&2
+			exit 1
 		fi
 	done
 }
