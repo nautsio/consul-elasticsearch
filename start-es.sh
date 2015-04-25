@@ -15,12 +15,12 @@ function getExternalAddressWait() {
 		getExternalAddress
 		. /publish.env
 		if [ $COUNT -le 60 -a -z "$PUBLISH_PORT" ] ; then
-			echo "Failed to obtain publish host and port for service '$SERVICE_ID'. Retrying in 1s.." >&2
+			echo "Failed to obtain publish host and port for service '$SERVICE_9300_ID'. Retrying in 1s.." >&2
 			sleep 1
 			COUNT=$(($COUNT + 1))
 		fi
 		if [ -z "$PUBLISH_PORT" ] ; then
-			echo "Failed to obtain publish host and port for service '$SERVICE_ID'. " >&2
+			echo "Failed to obtain publish host and port for service '$SERVICE_9300_ID'. " >&2
 			exit 1
 		fi
 	done
@@ -38,7 +38,7 @@ if [ $? -eq 0 ] ; then
 		--transport.publish_host=$PUBLISH_HOST \
 		--transport.publish_port=$PUBLISH_PORT \
 		--cluster.name=$SERVICE_NAME \
-		--node.name=$SERVICE_ID \
+		--node.name=$SERVICE_9300_ID \
 		$@
 else
 	echo ERROR: consul-template exited with non-zero status: $? >&2
