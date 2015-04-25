@@ -37,6 +37,8 @@ if [ $? -eq 0 ] ; then
 		--discovery.zen.ping.unicast.hosts=$(cat /es-unicast.lst) \
 		--transport.publish_host=$PUBLISH_HOST \
 		--transport.publish_port=$PUBLISH_PORT \
+		--cluster.name=$SERVICE_NAME \
+		--node.name=$SERVICE_ID \
 		$@
 else
 	echo ERROR: consul-template exited with non-zero status: $? >&2
