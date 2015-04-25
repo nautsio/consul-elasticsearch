@@ -25,7 +25,7 @@ function getExternalAddressWait() {
 		fi
 	done
 }
-sed -i -e 's/es-transport.[^"]*/es-transport.'"$SERVICE_NAME/" es-unicast.ctmpl
+sed -i -e 's/es-transport.[^"]*/es-transport.'"$SERVICE_NAME/" /es-unicast.ctmpl
 /consul-template -consul consul:8500 -once -template /es-unicast.ctmpl:/es-unicast.lst 
 
 if [ $? -eq 0 ] ; then
