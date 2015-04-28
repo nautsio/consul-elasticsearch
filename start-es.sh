@@ -30,18 +30,18 @@ function getEsHostList() {
 	sed -i -e 's/es-transport.[^"]*/es-transport.'"$SERVICE_NAME/" /es-unicast.ctmpl
 
 	COUNT=0
-	NR_OF_SERVICES=0
-	while [ $COUNT -lt 60 -a $NR_OF_SERVICES -lt $TOTAL_NR_OF_SERVICES ] ; do
+	NR_OF_SERVERS=0
+	while [ $COUNT -lt 60 -a $NR_OF_SERVERS -lt $TOTAL_NR_OF_SERVERS ] ; do
 		/consul-template -consul consul:8500 -once -template /es-unicast.ctmpl:/es-unicast.lst 
 		HOST_LIST=$(</es-unicast.lst)
-		NR_OF_SERVICES=$(cat /es-unicast.lst | tr ',' '\n' | wc -l)
-		if [ $NR_OF_SERVICES -lt $TOTAL_NR_OF_SERVICES ] ; then
-			echo "$NR_OF_SERVICES found in registry, $TOTAL_NR_OF_SERVICES required. sleeping 1." >&2
+		NR_OF_SERVERS=$(cat /es-unicast.lst | tr ',' '\n' | wc -l)
+		if [ $NR_OF_SERVERS -lt $TOTAL_NR_OF_SERVERS ] ; then
+			echo "$NR_OF_SERVERS found in registry, $TOTAL_NR_OF_SERVERS required. sleeping 1." >&2
 			sleep 1
 			COUNT=$(($COUNT + 1))
 		fi
 	done
-	if [ $NR_OF_SERVICES -lt $TOTAL_NR_OF_SERVICES ] ; then
+	if [ $NR_OF_SERVERS -lt $TOTAL_NR_OF_SERVERS ] ; then
 		echo "Failed to acquire the required number of services" >&2
 		exit 1
 	fi
@@ -50,6 +50,7 @@ function getEsHostList() {
 if [ $? -eq 0 ] ; then
 	getExternalAddressWait
         getEsHostList
+	cat /es-unicast.lst
 	. /publish.env
 
 	exec /elasticsearch/bin/elasticsearch \
