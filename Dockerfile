@@ -13,4 +13,6 @@ RUN chmod +x /usr/local/bin/jq
 ADD /start-elasticsearch-clustered.sh /
 RUN chmod +x /start-elasticsearch-clustered.sh
 
+RUN plugin -install mobz/elasticsearch-head
+
 CMD ["/start-elasticsearch-clustered.sh"]
