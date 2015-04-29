@@ -67,10 +67,12 @@ if [ $? -eq 0 ] ; then
 		echo ERROR: Failed to satisfy pre-conditions to start this node.
 	fi
 
-        exec gosu elasticsearch \
+	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
+
+        exec gosu elasticsearch elasticsearch \
                 --discovery.zen.ping.multicast.enabled=false \
                 --discovery.zen.ping.unicast.hosts=$HOST_LIST \
-                --transport.publish_host=$PUBLISH_HOST \
+                --transport.publish_host=$PUBLISH_ADDRESS \
                 --transport.publish_port=$PUBLISH_PORT \
                 --cluster.name=$SERVICE_NAME \
                 --node.name=$SERVICE_9300_ID \
