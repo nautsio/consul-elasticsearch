@@ -12,6 +12,7 @@ docker run --rm \
     --env SERVICE_9200_TAGS=http \
     --env SERVICE_9300_ID=<cluster-name>-<i> \
     --env SERVICE_9300_TAGS=es-transport \
+    --env TOTAL_NR_OF_SERVERS=<number-of-instances-in-cluster> \
     -P \
     --dns $(ifconfig docker0 | grep 'inet ' | awk '{print $2}') \
     --dns-search=service.consul \
