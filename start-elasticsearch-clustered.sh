@@ -3,7 +3,7 @@
 PEERS=${TMP:-/tmp}/$SERVICE_NAME.json
 
 function getServiceAddressesFromConsul() {
-        curl -s http://consul:8500/v1/catalog/service/$SERVICE_NAME?tag=es-transport > $PEERS
+        curl -s http://consul.service.consul:8500/v1/catalog/service/$SERVICE_NAME?tag=es-transport > $PEERS
 }
 
 function getOwnPublishPort() {
@@ -15,7 +15,11 @@ function getOwnPublishAddress() {
 }
 
 function getNumberOfPeers() {
-        jq -r 'length'  $PEERS
+        RESULT=$(jq -r 'length'  $PEERS)
+	if [ -z "$RESULT" ] ; then
+		RESULT=0
+	fi
+	echo $RESULT
 }
 
 function getPeerAddressList() {
@@ -29,7 +33,7 @@ function waitForAllServers() {
                 getServiceAddressesFromConsul
                 NR_OF_SERVERS=$(getNumberOfPeers)
                 if [ $NR_OF_SERVERS -lt $TOTAL_NR_OF_SERVERS ] ; then
-                        echo "$NR_OF_SERVERS found in registry, $TOTAL_NR_OF_SERVERS required. sleeping 2s." >&2
+                        echo "$NR_OF_SERVERS servers found in registry, $TOTAL_NR_OF_SERVERS required. waiting 2s." >&2
                         sleep 2
                         COUNT=$(($COUNT + 1))
                 fi
